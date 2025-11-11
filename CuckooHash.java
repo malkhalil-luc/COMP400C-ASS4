@@ -247,9 +247,68 @@ public class CuckooHash<K, V> {
 
  	public void put(K key, V value) {
 
+		
+
 		// ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
 		// Also make sure you read this method's prologue above, it should help
 		// you. Especially the two HINTS in the prologue.
+
+		if (key == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
+		//Initial hashes
+		int position1 = hash1(key);
+		int position2 = hash2(key);
+		
+		//if a key already exists with the same value, skip insertion. 
+		if (table[position1] != null && 
+			table[position1].getBucKey().equals(key) && 
+			table[position1].getValue().equals(value)) {
+			return; 
+		}
+		if (table[position2] != null && 
+			table[position2].getBucKey().equals(key) && 
+			table[position2].getValue().equals(value)) {
+			return; 
+		}
+		
+		//initial location
+		K Key = key;
+		V Value = value;
+		int location = hash1(Key);
+		
+		
+		for (int count = 0; count < CAPACITY; count++) {
+			
+			// insert if found an empty spot, 
+			if (table[location] == null) {
+				table[location] = new Bucket<>(Key, Value);
+				return;
+			}
+			
+			// spot is not empty kick out that element
+			Bucket<K, V> kickedOut = table[location];
+			table[location] = new Bucket<>(Key, Value);
+			Key = kickedOut.getBucKey();
+			Value = kickedOut.getValue();
+			
+			//find new position for the kicked out element
+			int hash1Location = hash1(Key);
+			int hash2Location = hash2(Key);
+			
+			if (location == hash1Location) {
+				location = hash2Location; 
+			} else {
+				location = hash1Location; 
+			}
+		}
+		
+		// elements kicked out without but no available location found, 
+		//rehash then try insert the kicked element
+		rehash();
+		put(Key, Value);
+		
 
 		return;
 	}

@@ -34,7 +34,23 @@ class ProblemSolutions {
 
         // ADD YOU CODE HERE -- DON'T FORGET TO ADD YOR NAME AT TOP OF FILE
 
-        return false;
+        if (list1 == null || list2 == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
+        //  create a set of all list1 elements
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 0; i < list1.length; i++) {
+            set.add(list1[i]);
+        }
+        // loop through list 2 elements and check if they ALL are in the set, otherwise it is not a subset
+        for (int i = 0; i < list2.length; i++) {
+            if (!set.contains(list2[i])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -55,7 +71,25 @@ class ProblemSolutions {
 
         // ADD YOUR CODE HERE
 
-        return 0;
+
+        if (array == null || k < 1 || k > array.length) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
+        // Min-heap to keep track of top K largest elements
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int num : array) {
+            minHeap.add(num);
+
+            // Keep heap size at most K
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+
+        // The root of the min-heap is the k-th largest element
+        return minHeap.peek();
     }
 
 
@@ -76,7 +110,29 @@ class ProblemSolutions {
 
         // ADD YOU CODE HERE
 
-        return null;
+        // using hash set can be faster for insertion but will remove elements if they exist in both arrays
+    
+        if (array1 == null || array2 == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (int num : array1){
+            pq.add(num);
+        } 
+
+        for (int num : array2){
+            pq.add(num);
+        } 
+
+        int[] result = new int[array1.length + array2.length];
+    
+        int i = 0;
+        while (!pq.isEmpty()){
+            result[i++] = pq.poll();
+        } 
+        
+        
+        return result;
     }
 
 }

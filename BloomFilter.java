@@ -224,9 +224,28 @@ class BloomFilter {
         // of type BitSet (Java class BitSet). See Oracle documentation for
         // this class on available methods. You can also see how method 'add'
         // in this class uses the object.
+        
+        if (s == null || s.isEmpty()) {
+          throw new IllegalArgumentException("String cannot be null or empty");
+        }
 
-        return false;
-    }
+        for (int n = 0; n < noHashes; n++) {
+            // Get the hash code using hash function number n
+            long hc = hashCode(s, n);
+            // Convert hash code to a bit position in our BitSet
+            int bitNo = (int) (hc) & this.hashMask;
+            // Is this bit set to 1?
+            boolean isBitSet = data.get(bitNo);
+            if (!isBitSet) {
+                // Found a bit that's 0
+                return false;
+             }
+         }
+    
+    // All bits were 1, so string is probably in the set
+    return true;
+        
+}
 
 
     /*********************************
